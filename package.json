@@ -19,7 +19,6 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "find-config": "^1.0.0",
-    "mongodb": "^6.2.0",
     "mongoose": "^7.6.4",
     "nodemon": "^3.0.1",
     "validator": "^13.11.0"
