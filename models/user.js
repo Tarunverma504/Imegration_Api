@@ -20,6 +20,14 @@ const userSchema = new mongoose.Schema({
     role:{
         type:String,
         default: "Imegrant"
+    },
+    customers:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Customers"
+    }],
+    createdAt: {
+        type: Date,
+        default: Date.now,
     }
 })
 
