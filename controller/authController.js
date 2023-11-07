@@ -1,5 +1,7 @@
 const User = require("../models/user");
 const Customer = require("../models/customer");
+const ForgotPassword = require("../models/forgotPassword");
+const {sendMail} = require("../Utils/sendMail");
 const bcrypt = require('bcryptjs');
 const {
     Imegrant,
@@ -107,7 +109,6 @@ exports.addCustomer = async(req, res)=>{
         else{
             res.status(403).json({message:"Invalid Imegrant"});
         }
-        //res.send(req);
     }
     catch(err){
         console.error(err);
@@ -115,6 +116,93 @@ exports.addCustomer = async(req, res)=>{
     }
 }
 
+exports.forgotPassword = async(req, res)=>{
+    try{
+        const {email} = req.body;
+        if(email.trim().length>0){
+            if(isEmail(email)){
+                const user = await User.findOne({email});
+                if(user){
+                    await ForgotPassword.create({
+                        userId: user._id,
+                        email: email
+                    }).
+                    then((data)=>{
+                        console.log(data);
+                        if(sendMail(user.email, "https://www.google.com")){
+                            res.status(200).json({message:"Link send successfully"});
+                        }
+                        else{
+                            res.status(504).send({ message: 'Internalserver error', err:err});
+                        }
+                    })
+                }
+                else{
+                    res.status(403).json({message:"Invalid Email"});
+                }
+            }
+            else{
+                res.status(403).json({message:"Invalid Email"});
+            }
+        }
+        else{
+            res.status(403).json({message:"Please Enter email"});
+        }
+    }
+    catch(err){
+        console.error(err);
+        res.status(504).send({ message: 'Internalserver error', err:err});
+    }
+}
+
+exports.updatePassword = async(req, res)=>{
+    try{
+        const {password, confirmPassword} = req.body;
+        if(password.trim().length>0 && confirmPassword.trim().length>0){
+            if(password.trim() == confirmPassword.trim()){
+                const id = req.params.id;
+                await ForgotPassword.findById(id)
+                .then(async(data)=>{ 
+                    console.log(data);
+                    if(data.isActive){
+                        const newPassword = await bcrypt.hash(password,10);
+                        console.log(newPassword);
+                        await User.findByIdAndUpdate({_id:data.userId}, {password: newPassword})
+                            .then(async(data)=>{
+                                await ForgotPassword.findByIdAndUpdate({_id:id}, {isActive:false})
+                                .then(()=>{
+                                    res.status(200).json({message:"Password updated successfully"});
+                                })
+                                .catch((err)=>{
+                                    res.status(504).send({ message: 'Internalserver error', err:err});
+                                })
+
+                            })
+                    }
+                    else{
+                        res.status(403).json({message:"Link Expired"});
+                    }
+                 
+                })
+                .catch((err)=>{
+                    console.log(err);
+                    res.status(504).send({ message: 'Internalserver error', err:err});
+                })
+            }
+            else{
+                res.status(403).json({message:"Passwords didn't matched"});
+            }
+        }
+        else{
+            res.status(403).json({message:"Please fill all the details"});
+        }
+
+    }
+    catch(err){
+        console.error(err);
+        res.status(504).send({ message: 'Internalserver error', err:err});
+    }
+}
 
 exports.getUsersList = async(req, res)=>{
     try{
@@ -133,10 +221,10 @@ exports.getUsersList = async(req, res)=>{
             else if(user.role == Admin){
                 await User.find({role:Imegrant})
                 .then((data)=>{
-                    res.send(data);
+                    res.status(200).send(data);
                 })
                 .catch((err)=>{
-                    res.send(err);
+                    res.status(504).send({ message: 'Internalserver error', err:err});
                 })
             }
         }
@@ -149,3 +237,13 @@ exports.getUsersList = async(req, res)=>{
         res.status(504).send({ message: 'Internalserver error', err:err});
     }
 }
+
+
+
+function isEmail(email) {
+    var emailFormat = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    if (email !== '' && email.match(emailFormat)) { return true; }
+    
+    return false;
+}
+    
