@@ -7,7 +7,7 @@ var apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.SENDINBLUE_API_KEY;
 var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
-async function sendMail(email, msg){
+async function sendMail(email, msg, subject){
     const sender ={
         email: process.env.SENDER_MAIL_ID,
         name:'Imegration'
@@ -16,9 +16,8 @@ async function sendMail(email, msg){
         await apiInstance.sendTransacEmail({
             sender,
             to: [{email: email}],
-            subject:"Change account Password request",
-            htmlContent: `<p>Hi, Please click the below link to change the password</p>
-                <a href=${msg}>Click Here</a>`
+            subject:`${subject}`,
+            htmlContent: `${msg}`
         })
         .then((data)=>{
             console.log(data);

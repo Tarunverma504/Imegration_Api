@@ -129,7 +129,9 @@ exports.forgotPassword = async(req, res)=>{
                     }).
                     then((data)=>{
                         console.log(data);
-                        if(sendMail(user.email, "https://www.google.com")){
+                        const msg = `<p>Hi, Please click the below link to change the password</p>
+                        <a href='https://www.google.com'>Click Here</a>`
+                        if(sendMail(user.email, msg, "Change account Password request")){
                             res.status(200).json({message:"Link send successfully"});
                         }
                         else{
@@ -238,6 +240,30 @@ exports.getUsersList = async(req, res)=>{
     }
 }
 
+exports.sendInvitation=async(req,res)=>{
+    try{
+        const {customerEmail, pageUrl} = req.body;
+        if(customerEmail.trim().length>0&&isEmail(customerEmail)){
+            const msg = `<p>Hi, Please click the below link to open the Invitation</p>
+            <a href=${pageUrl}>Click Here</a>`
+            if(sendMail(customerEmail, msg, "Immigurus Invitation")){
+                res.status(200).json("Mail send successfully");
+            }
+            else{
+                res.status(504).send({ message: 'Internalserver error'});
+            }
+
+        }else{
+            res.status(403).json({message:"Bad Request"});
+        }
+
+    }
+    catch(err){
+        console.error(err);
+        res.status(504).send({ message: 'Internalserver error', err:err});
+    }
+
+}
 
 
 function isEmail(email) {
