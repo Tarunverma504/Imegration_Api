@@ -10,7 +10,7 @@ var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 async function sendMail(email, msg, subject){
     const sender ={
         email: process.env.SENDER_MAIL_ID,
-        name:'Imegration'
+        name:'The Immigurus'
     }
     try{
         await apiInstance.sendTransacEmail({
