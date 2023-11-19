@@ -130,7 +130,7 @@ exports.forgotPassword = async(req, res)=>{
                     then((data)=>{
                         console.log(data._id);
                         const msg = `<p>Hi, Please click the below link to change the password</p>
-                        <a href='https://tig-affiliate-dashboard.vercel.app/reset-password/${data._id}'>Click Here</a>`
+                        <a href='https://dashboard.immigurus.com//reset-password/${data._id}'>Click Here</a>`
                         if(sendMail(user.email, msg, "Change account Password request")){
                             res.status(200).json({message:"Link send successfully"});
                         }
