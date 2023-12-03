@@ -260,7 +260,8 @@ exports.sendInvitation=async(req,res)=>{
             Marketing Team, The Immigration Gurus<br/>
             Email: <a href = "mailto:support@immigurus.com">support@immigurus.com</a><br/>
             Mob: <a href="tel:+91-9812380882">+91-9812380882</a>
-            </p>`
+            <p><a href=${pageUrl}>Click Here</a> for further steps</p>
+            `
             if(sendMail(customerEmail, msg, "Immigurus Invitation")){
                 res.status(200).json("Mail send successfully");
             }
