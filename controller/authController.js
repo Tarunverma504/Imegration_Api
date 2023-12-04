@@ -75,11 +75,11 @@ exports.loginUser = async(req, res)=>{
 
 exports.addCustomer = async(req, res)=>{
     try{
-        const {name, email, phoneNumber} = req.body;
+        const {name, email, phoneNumber, country} = req.body;
         const id = req.params.id;
         const user = await User.findById(id);
         if(user!=null){
-            if( !name || !email || !phoneNumber || name.trim().length<1 || email.trim().length<1){
+            if( !name || !email || !phoneNumber || !country || name.trim().length<1 || email.trim().length<1  || country.trim().length<1){
                 res.status(403).send({message:"Please fill all the details"});
             }
             else{
@@ -87,7 +87,8 @@ exports.addCustomer = async(req, res)=>{
                     name: name,   
                     email: email,
                     phoneNumber: phoneNumber,
-                    userId: id
+                    userId: id,
+                    country:country
                 })
                 .then(async(data)=>{
                     console.log(data);

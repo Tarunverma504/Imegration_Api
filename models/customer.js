@@ -19,6 +19,10 @@ const customerSchema = new mongoose.Schema({
         type:Number,
         required:[true, 'Please enter Phone Number']
     },
+    country:{
+        type:String,
+        default:''
+    },
     createdAt:{
         type:Date,
         default:Date.now
