@@ -40,7 +40,7 @@ exports.registerUser = async(req, res)=>{
                 Mob: <a href="tel:+91-9812380882">+91-9812380882</a>
                 <p><a href=${process.env.FRONTEND_URL}/customer-form/${user._id}>Click Here</a> for further steps</p>
                 `
-                if(sendMail(customerEmail, msg, "Immigurus Invitation"))
+                if(sendMail(email, msg, "Immigurus Invitation"))
                 {
                     res.status(200).json({name:user.name, email:user.email, role: user.role, id:user._id})
                 }
