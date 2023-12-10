@@ -24,8 +24,30 @@ exports.registerUser = async(req, res)=>{
                 password
             })
             if(user!=null){
-                console.log(user);
-                res.status(200).json({name:user.name, email:user.email, role: user.role, id:user._id})
+                const msg = `<p>
+                Dear Sir/Ma'am,<br/><br/>
+                We hope this email finds you hale & hearty.<br/><br/>
+                We want to express our sincere gratitude for accepting the invitation to collaborate with The Immigration Gurus. It's an absolute honor to partner with someone as influential and respected as you.<br/><br/>
+                Please use the below given Unique Link to share it with your Videos or Posts to get Expression of Interest from your audience - <br/><br/>
+                .......................................... <br/><br/>
+                We are thrilled about the opportunity to work together and leverage your platform to promote Immigration Services for Canada, Australia, UK, USA & NZ, etc. Your audience's trust and engagement are truly invaluable, and we are excited about the potential impact our collaboration can have for our mutual growth.<br/><br/>
+                We are fully committed to ensuring this partnership is mutually beneficial. Please feel free to share any specific preferences, guidelines, or ideas you have in mind for our affiliate marketing efforts. Your expertise and insights will be instrumental in crafting compelling and authentic content.<br/><br/>
+                We look forward to a successful and fruitful partnership ahead. If there's anything else you need or any additional information we can provide, please don't hesitate to reach out.<br/><br/>
+                Once again, thank you for this fantastic opportunity. We are excited about the journey ahead and eager to create valuable content together.<br/><br/>
+                Warm regards,<br/>
+                Marketing Team, The Immigration Gurus<br/>
+                Email: <a href = "mailto:support@immigurus.com">support@immigurus.com</a><br/>
+                Mob: <a href="tel:+91-9812380882">+91-9812380882</a>
+                <p><a href=${process.env.FRONTEND_URL}/customer-form/${user._id}>Click Here</a> for further steps</p>
+                `
+                if(sendMail(customerEmail, msg, "Immigurus Invitation"))
+                {
+                    res.status(200).json({name:user.name, email:user.email, role: user.role, id:user._id})
+                }
+                else
+                {
+                    res.status(504).send({ message: 'Internalserver error'});
+                }
             }
             else{
                 res.status(500).send({ message: 'Internalserver error'});
