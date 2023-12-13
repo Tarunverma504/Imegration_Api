@@ -12,6 +12,7 @@ require('dotenv').config({ path: require('find-config')('.env') });
 
 exports.registerUser = async(req, res)=>{
     try{
+        
         const {name, email, password} = req.body;
         if(name.trim().length<1 || email.trim().length<1 || password.trim().length<1){
             res.status(401).send({ message: 'Please fill all the details'});
